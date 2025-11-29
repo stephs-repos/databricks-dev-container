@@ -33,15 +33,13 @@ resources:
           environment_key: default
           notebook_task:
             # Path to a notebook in your bundle (relative to bundle root).
-            # Example: ./notebooks/example_notebook
-            notebook_path: ./notebooks/example_notebook
+            notebook_path: ./notebooks/package_free_notebook.ipynb
 
         - task_key: run-python-script
           environment_key: default
           spark_python_task:
-            # Path to a Python script in your bundle.
-            # Example: ./src/jobs/example_job.py
-            python_file: ./src/jobs/example_job.py
+            python_file: ./scripts/sample_script.py
+
 
 targets:
   sample:

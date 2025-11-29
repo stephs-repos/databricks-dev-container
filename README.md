@@ -76,7 +76,7 @@ Feel free to make suggestions for improvements in the form of comments or a pull
 ### 2. Persisting credentials across dev-container rebuilds
 > **Note:** this step is 'kind of' optional, but i encourage you to read on... 
 
-You'll notice that this dev container bind-mounts a few files and directories from your host `$HOME` into the container:
+You'll notice that `devcontainer.json` bind-mounts a few files and directories from your host `$HOME` into the container:
 
 ```jsonc
 "mounts": [
@@ -86,13 +86,13 @@ You'll notice that this dev container bind-mounts a few files and directories fr
   "source=${localEnv:HOME}/.databricks,target=/home/vscode/.databricks,type=bind,consistency=cached"
 ]
 ```
+Dev containers are disposable by design: every rebuild gives you a fresh filesystem. That's great for reproducibility, but annoying for anything you don't want to re-enter every time (SSH keys, Databricks auth, Git identity, etc.).
+
+> **Note**: you can always comment out the mounts section in the `.devcontainer.json` file if it's causing you too much stress. Or you can just leave them in there. If the local paths on your os host don't exist the container will just complain on build and ignore them -> and then default to locations inside the container (but you'll have to reconfigure git (name and email deets) and the databricks profiles/creds after every container rebuild and i hate that.)
+
 For the git mounts to work, you just need to install git in on your local OS if it's not there already. The mounts will show up as folders inside the container once it builds, and any git operation will read creds from those external folders. 
 
 For the Databricks mounts: the Databricks CLI is only installed inside the container, not on the host. You'll need to create a stub in the home directory of your local host os like so: 
-
-Create placeholders on macOS / Linux on your host (not inside the container),
-
-run:
 
 - `mkdir -p "$HOME/.databricks"`
 - `touch "$HOME/.databrickscfg"`
@@ -103,30 +103,14 @@ This gives you:
 
 If you're on Windows and Docker Desktop is using WSL2, you'd run the previous commands in the WSL distro instead. 
 
-### Why do this?
-
-Dev containers are disposable by design: every rebuild gives you a fresh filesystem. That’s great for reproducibility, but annoying for anything you don’t want to re-enter every time (SSH keys, Databricks auth, Git identity, etc.).
-
-> **Note**: you can always comment out the mounts section in the `.devcontainer.json` file if it's causing you too much stress. Or you can just leave them in there. If the local paths on your os host don't exist the container will just complain on build and ignore them -> and then default to locations inside the container (but you'll have to reconfigure git (name and email deets) and the databricks profiles/creds after every container rebuild and i hate that.)
-
 By mounting these host paths into the container:
 
-- **Credentials and identity persist across rebuilds**
-  - `~/.gitconfig` gives Git inside the container the same name, email, and settings as on your host.
-  - `~/.ssh` provides your existing SSH keys and `known_hosts`, so you can pull from/push to private repos without re-creating keys.
-  - `~/.databrickscfg` and `~/.databricks` reuse your existing Databricks CLI profiles and auth tokens, so you don’t have to log in again after every container rebuild.
-
-- **No secrets baked into the image or repo**
-  - Credentials stay on your host filesystem; they are **not** copied into the container image and **not** checked into source control.
-  - This keeps the Docker image and Git repository free of personal secrets, which is safer and easier to share.
-
-- **Consistent tooling between host and container**
-  - Git, SSH, and Databricks CLI inside the container behave exactly like they do on your host, using the same config and keys.
-  - You avoid “it works on the host but not in the container” issues caused by different identities or missing credentials.
-
-- **Better developer experience**
-  - You can rebuild the container as often as you like (changing Python versions, adding tools, etc.) without having to re-authenticate every time.
-  - Onboarding is simpler: once your host is configured (SSH keys, Databricks profiles, etc.), the container just picks it up.
+- Credentials and identity persist across rebuilds.
+- Credentials stay on your host filesystem; they are not copied into the container image and not checked into source control.
+- Git, SSH, and Databricks CLI inside the container behave exactly like they do on your host, using the same config and keys.
+- ~/.gitconfig gives Git inside the container the same name, email, and settings as on your host.
+- ~/.ssh provides your existing SSH keys and known_hosts, so you can pull from/push to private repos without re-creating keys.
+- ~/.databrickscfg and ~/.databricks reuse your existing Databricks CLI profiles and auth tokens, so you don't have to log in again after every container rebuild.
 
 #### Security note
 
@@ -230,4 +214,5 @@ You can copy, modify, use, and redistribute it for any purpose, with no attribut
 ---
 
 Suggestions? Open an issue or add a PR with your improvements.
+
 

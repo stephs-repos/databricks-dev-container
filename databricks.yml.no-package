@@ -1,0 +1,52 @@
+bundle:
+  # A human-friendly name for the bundle.
+  name: sample_bundle
+
+sync:
+  # Files or directories to exclude from being synced to Databricks.
+  exclude:
+    - ".devcontainer/**"
+    - ".vscode/**"
+    - "dist/**"
+
+resources:
+  jobs:
+    sample-job:
+      # The name used in Databricks for the job once created.
+      name: sample-job
+
+      # Use serverless / queue-based compute (no explicit wheel env).
+      queue:
+        enabled: true
+      performance_target: PERFORMANCE_OPTIMIZED
+
+      # Optional: keep an environment to pin the runtime version,
+      # but with no wheel / library dependencies.
+      environments:
+        - environment_key: default
+          spec:
+            environment_version: "4"
+
+      # Define tasks that run notebooks and Python scripts directly.
+      tasks:
+        - task_key: run-notebook
+          environment_key: default
+          notebook_task:
+            # Path to a notebook in your bundle (relative to bundle root).
+            # Example: ./notebooks/example_notebook
+            notebook_path: ./notebooks/example_notebook
+
+        - task_key: run-python-script
+          environment_key: default
+          spark_python_task:
+            # Path to a Python script in your bundle.
+            # Example: ./src/jobs/example_job.py
+            python_file: ./src/jobs/example_job.py
+
+targets:
+  sample:
+    mode: development
+    default: true
+    workspace:
+      host: << your databricks workspace url goes here, e.g. https://adb-1234567890123456.7.azuredatabricks.net >>
+      root_path: "/Workspace/Users/${workspace.current_user.userName}/sample_bundle/${bundle.name}"

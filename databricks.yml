@@ -1,0 +1,126 @@
+
+bundle:
+  # A human-friendly name for the bundle. Typically used to name generated artifacts
+  # and for identification when working with databricks bundle commands.
+  name: sample_package
+
+sync:
+  # Files or directories to include in the bundle package.
+  exclude:
+    - ".devcontainer/**"
+    - ".vscode/**"
+    - "dist/**"
+
+artifacts:
+  # Artifacts describe the packaging or build artifacts that are associated with
+  # the bundle. Each artifact key can map to different build types such as a
+  # Python wheel (whl), docker image, or local files.
+  default:
+    # 'type' tells the bundle the kind of artifact to expect.
+    # Supported values often include: 'whl', 'docker', 'python_zip', etc.
+    type: whl
+    # 'build' is the command used to generate the artifact. Here we're using uv to 
+    # build the wheel).
+    build: uv build
+
+resources:
+  # Resources define higher-level entities to create/manage in Databricks.
+  # Common resource types include 'jobs', 'pipelines', 'workflows', etc.
+  jobs:
+    sample-job:
+      # The name used in Databricks for the job once created.
+      name: sample-job
+
+      # Optional queue configuration for the job. Queues control whether the job
+      # uses a cluster queue (often managed as instance pools or similar) and
+      # how job concurrency or resource allocation is handled.
+      queue:
+        # If enabled is true, the job will attempt to use a configured queue.
+        enabled: true
+      # Sets the intended performance profile for the job; typical values are
+      # PERFORMANCE_OPTIMIZED, BALANCED, or COST_OPTIMIZED (depending on your
+      # workspace and Databricks product version). This influences the instance
+      # types and scale settings used when Databricks creates a cluster.
+      performance_target: PERFORMANCE_OPTIMIZED
+
+      # Environments lists the environment(s) that tasks will use. Each
+      # environment maps an 'environment_key' to a spec describing runtime
+      # versions and dependencies to provision for tasks that opt into it.
+      environments:
+        - environment_key: default
+          spec:
+            #  
+            # The environment_version is a provider-defined version identifier
+            # for the runtime environment (e.g., a runtime version for
+            # Databricks). Use the documented version string supported by your
+            # Databricks or bundle provider.
+            environment_version: "4"
+            # Dependencies: resources (wheel files, libraries or files) that the
+            # environment should include. They can be referenced from the
+            # workspace, DBFS, or external artifact registries depending on
+            # your platform/provider.
+            dependencies:
+              - /Workspace/Users/${workspace.current_user.userName}/sample_bundle/${bundle.name}/artifacts/.internal/sample_package-0.1.0-py3-none-any.whl
+
+      # ------------------------------------------------------------------
+      # Alternative compute configuration: job cluster (no serverless)
+      #
+      # If your workspace does NOT have serverless compute enabled:
+      #   1. Comment out the 'queue', 'performance_target', and 'environments'
+      #      sections above.
+      #   2. Uncomment the 'job_clusters' block and update spark_version and
+      #      node_type_id to match your workspace.
+      #   3. In the task definition, replace 'environment_key: default' with
+      #      'job_cluster_key: sample_cluster' and remove 'environment_key'.
+      #
+      # Example:
+      #
+      # job_clusters:
+      #   - job_cluster_key: sample_cluster
+      #     new_cluster:
+      #       spark_version: "15.4.x-scala2.12"
+      #       node_type_id: "Standard_DS3_v2"
+      #       autoscale:
+      #         min_workers: 1
+      #         max_workers: 2
+      #       # Optional: attach the same wheel as a cluster library instead
+      #       # of using 'environments.dependencies':
+      #       # libraries:
+      #       #   - whl: /Workspace/Users/${workspace.current_user.userName}/.bundle/${bundle.name}/${bundle.target}/artifacts/.internal/sample_package-0.1.0-py3-none-any.whl
+      # ------------------------------------------------------------------
+
+
+      # Define the tasks that the job will run. Each task can select a
+      # previously defined 'environment_key' and specify task-specific
+      # configuration, such as Python wheel invocation details.
+      tasks:
+        - task_key: main
+          environment_key: default
+          # python_wheel_task config is used to run a Python function from a
+          # wheel inside Databricks. 'package_name' should match the package
+          # written and installed by your wheel; 'entry_point' is typically a
+          # console entry point or a callable name registered in packaging.
+          python_wheel_task:
+            package_name: sample_package
+            entry_point: main
+
+targets:
+  # 'targets' are deployment targets for the bundle — typically one for each
+  # environment (e.g., dev/staging/prod). Each target maps to a
+  # workspace and can set mode, credentials, and workspace specifics.
+  # The key 'course' here identifies this target. Adjust or add more targets
+  # to match your environments (staging/prod) as needed.
+  sample:
+    # mode indicates the intended operational mode (e.g., 'development' or
+    # 'production') and may change behavior for deployment/validation steps.
+    mode: development
+    # A boolean indicating a default target to use when not explicitly
+    # specifying one on the command line.
+    default: true
+    workspace:
+      # The host is the URL for the Databricks workspace where this target is
+      # deployed. This should be a valid, accessible workspace URL.
+      host: << your databricks workspace url goes here, e.g. https://adb-1234567890123456.7.azuredatabricks.net >>
+      root_path: "/Workspace/Users/${workspace.current_user.userName}/sample_bundle/${bundle.name}"
+
+

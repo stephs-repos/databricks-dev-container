@@ -1,0 +1,31 @@
+.git-credentials
+
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.databricks
+.DS_Store
+
+# Common secrets and credentials
+.env
+.env.*
+.pypirc
+.netrc
+.git-credentials
+*.pem
+*.key
+*.crt
+*.jks
+*.p12
+*.pfx
+.aws/
+.azure/
+.gcloud/
+credentials.json
+secrets.json
+*.asc
+
+# Editor files
+.vscode/
+.idea/

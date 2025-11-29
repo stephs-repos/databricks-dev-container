@@ -167,7 +167,7 @@ While you're there, you might have to configure some compute. Set it to serverle
 
 ---
 
-### 5. Deploy the asset bundle
+### 6. Deploy the asset bundle
 
 At this point you should be good to deploy the asset bundle to the databricks workspace. `databricks.yml` will build the wheel using uv. The wheel is then deployed to the workspace along with the other project files. Run all of these commands from a terminal in the vscode container. 
 
@@ -214,5 +214,6 @@ You can copy, modify, use, and redistribute it for any purpose, with no attribut
 ---
 
 Suggestions? Open an issue or add a PR with your improvements.
+
 
 

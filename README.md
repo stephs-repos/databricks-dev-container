@@ -2,6 +2,8 @@
 
 This repository is a minimal template to help developers build Databricks projects using a VS Code Dev Container. It installs the databricks cli, the vscode Databricks extension, and demonstrates a Python packaging layout, a sample job, unit tests, and a `databricks.yml` bundle that can be used to deploy jobs/resources/wheel to Databricks.
 
+Use this template as a starting point for building and deploying your Databricks workloads while developing in a reproducible dev container. Why use a dev container? Because once you use containers you'll never go back. 
+
 ## What this template provides
 
 - A VS Code **Dev Container** preconfigured for Databricks development (Python tooling, Databricks CLI, `uv`, etc.).
@@ -14,8 +16,6 @@ I've tested this out on Azure Databricks premium workspace as well as free editi
 
 The asset bundle is configured to use *serverless* compute in the databricks workspace. This took me a while to figure
 out, some of this stuff is pretty new and not easy to find in the ref docs.
-
-Use this template as a starting point for building and deploying your Databricks workloads while developing in a reproducible dev container. Why use a dev container? Because once you use containers you'll never go back. 
 
 I did use the chatbot to generate some of the boilerplate in this doc. I've reviewed it all, but please let me know if you encounter any fun hallucinations or alternative facts.  
 
@@ -54,6 +54,8 @@ Key files and directories you'll find here:
 - `tests/` - Unit and integration tests (e.g., `tests/unit/test_sample_utils.py`).
 
 The pyproject.toml and uv.lock files will be generated on first build of the container. 
+
+> Although this repo includes support for package development, you are by no means obligated to develop packages with it. Containerization is the real point here. If you want to just roll notebooks or python scripts and run them remotely against the Databricks workspace, no problem, just replace databricks.yml with databricks.yml.no-package so you're not annoyed by failing dependency errors.
 
 ---
 
@@ -214,6 +216,7 @@ You can copy, modify, use, and redistribute it for any purpose, with no attribut
 ---
 
 Suggestions? Open an issue or add a PR with your improvements.
+
 
 
 

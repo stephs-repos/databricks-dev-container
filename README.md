@@ -10,7 +10,7 @@ This repository is a minimal template to help developers build Databricks projec
   - deploy the wheel artifact to your workspace, and  
   - run it as a Databricks job that references a python wheel.
 
-I've tested this out on Azure Databricks workspace as well as free edition, but it should work fine on AWS/GCP.  
+I've tested this out on Azure Databricks premium workspace as well as free edition. It should work fine on AWS/GCP as well.  
 
 The asset bundle is configured to use *serverless* compute in the databricks workspace. This took me a while to figure
 out, some of this stuff is pretty new and not easy to find in the ref docs.
@@ -230,3 +230,4 @@ You can copy, modify, use, and redistribute it for any purpose, with no attribut
 ---
 
 Suggestions? Open an issue or add a PR with your improvements.
+

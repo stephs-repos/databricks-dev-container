@@ -201,7 +201,7 @@ You can run the local unit tests like so:
 
 # Notes
 
-You can set up the container to be it's own spark cluster. You'd need to install the spark runtime, and delta lake. This config is fantastic for unit testing when you don't want to wait for clusters to spin up on the remote databricks workspace, not to mention it lets you save your hard earned scrilla. I've tested that out too and it works well. 
+You can set up the container to be its own spark cluster. You'd need to install the spark runtime, and delta lake. This config is fantastic for unit testing when you don't want to wait for clusters to spin up on the remote databricks workspace, not to mention it lets you save your hard earned scrilla. I've tested that out too and it works well. 
 
 ---
 
@@ -214,6 +214,7 @@ You can copy, modify, use, and redistribute it for any purpose, with no attribut
 ---
 
 Suggestions? Open an issue or add a PR with your improvements.
+
 
 
 
